@@ -19,10 +19,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return token
     },
     session({ session, token }) {
+      console.log({token})
       if (session.user) {
         session.user.role = token.role
       }
       return session
     },
   },
+  // cookies: {
+  //   sessionToken : {
+  //     name: "next-auth.session-token",
+  //   }
+  // }
 })

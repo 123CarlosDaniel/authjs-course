@@ -15,14 +15,13 @@ export const loginAction = async (values: z.infer<typeof loginSchema>) => {
       password: values.password,
       redirectTo: "/dashboard",
     })
-    return { success: true }
   } catch (e) {
-    console.log(e)
     if (e instanceof AuthError) {
       return { error: e.cause?.err?.message }
     }
     throw e
   }
+  return { success: true }
 }
 
 export const registerAction = async (
@@ -30,6 +29,7 @@ export const registerAction = async (
 ) => {
   try {
     const { data, success } = registerSchema.safeParse(values)
+
     if (!success) {
       return { error: "invalid data" }
     }
@@ -43,7 +43,7 @@ export const registerAction = async (
     if (user) {
       return { error: "user already exists" }
     }
-
+    
     await db.user.create({
       data: {
         name: data.name,
@@ -51,18 +51,17 @@ export const registerAction = async (
         password: await bcrypt.hash(data.password, 10),
       },
     })
+
     await signIn("credentials", {
       email: values.email,
       password: values.password,
-      redirect: false
+      redirect: false,
     })
-
-    return { success: true }
-
   } catch (e) {
     if (e instanceof AuthError) {
       return { error: e.cause?.err?.message }
     }
-    return { error: "error 500" }
+    throw e
   }
+  return { success: true }
 }
