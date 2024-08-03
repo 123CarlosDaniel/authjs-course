@@ -14,13 +14,28 @@ import {
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { loginAction } from "@/actions/auth-actions"
-import { useState, useTransition } from "react"
+import { useEffect, useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
+import { AUTH_COOKIE_WATCHER } from "@/lib/constants"
+import { getCookie, setCookie } from "cookies-next"
 
 const FormLogin = () => {
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
   const router = useRouter()
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const isLoggedIn = getCookie(AUTH_COOKIE_WATCHER)
+      if (isLoggedIn == "true") {
+        router.push("/dashboard")
+      }
+    }, 1000)
+    return () => {
+      clearInterval(interval)
+    }
+  }, [])
+
   const loginForm = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -37,8 +52,11 @@ const FormLogin = () => {
         setError(response.error)
         return
       }
-      console.log({ response })
-      // router.push("/admin")
+      setCookie(AUTH_COOKIE_WATCHER, "true", {
+        path: "/",
+        maxAge: 60 * 60 * 24 * 30,
+        httpOnly: false,
+      })
     })
   }
 

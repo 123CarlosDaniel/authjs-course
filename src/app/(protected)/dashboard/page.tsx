@@ -1,4 +1,5 @@
 import { auth, signOut } from "@/auth"
+import { LogoutButtonClient } from "@/components/logout-button"
 import { Button } from "@/components/ui/button"
 
 const DashboardPage = async ({
@@ -14,7 +15,7 @@ const DashboardPage = async ({
       </span>
       <h1>Dashboard</h1>
       <pre>{JSON.stringify(session, null, 2)}</pre>
-      <LogoutButton />
+      <LogoutButtonClient />
     </div>
   )
 }

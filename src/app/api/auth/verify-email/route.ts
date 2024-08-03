@@ -1,7 +1,7 @@
 import { db } from "@/lib/db"
 import { NextResponse, type NextRequest } from "next/server"
-// import jwt from "jsonwebtoken"
-import {encode} from "@auth/core/jwt"
+import { encode } from "@auth/core/jwt"
+import { AUTH_COOKIE_WATCHER } from "@/lib/constants"
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams
@@ -31,16 +31,16 @@ export async function GET(request: NextRequest) {
       email: tokenExists.identifier,
     },
   })
-  // if (user?.emailVerified) {
-  //   return new NextResponse("Email already verified", { status: 400 })
-  // }
+  if (user?.emailVerified) {
+    return new NextResponse("Email already verified", { status: 400 })
+  }
 
   // verificar si el token es valido
-  // await db.verificationToken.deleteMany({
-  //   where: {
-  //     identifier: tokenExists.identifier,
-  //   },
-  // })
+  await db.verificationToken.deleteMany({
+    where: {
+      identifier: tokenExists.identifier,
+    },
+  })
   await db.user.update({
     where: {
       email: tokenExists.identifier,
@@ -58,14 +58,15 @@ export async function GET(request: NextRequest) {
       picture: user?.image,
       role: user?.role,
     },
-    maxAge: 60*60,
+    maxAge: 60 * 60,
     secret: process.env.AUTH_SECRET!,
-    salt: "authjs.session-token"
+    salt: "authjs.session-token",
   })
-  const response = NextResponse.redirect("http://localhost:3000/dashboard")
+  const response = NextResponse.redirect(`${process.env.BASE_URL}/dashboard`)
   response.cookies.set("authjs.session-token", sessionToken, {
     httpOnly: true,
     maxAge: 60 * 60,
   })
+  response.cookies.set(AUTH_COOKIE_WATCHER, "true")
   return response
 }

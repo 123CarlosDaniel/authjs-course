@@ -5,7 +5,6 @@ import { loginSchema } from "./lib/zod"
 import { nanoid } from "nanoid"
 import { db } from "./lib/db"
 import { sendEmailVerification } from "./lib/mail"
-import Resend from "next-auth/providers/resend"
 
 // Notice this is only an object, not a full Auth.js instance
 export default {
@@ -68,8 +67,5 @@ export default {
         throw new Error("Please check your email")
       },
     }),
-    // Resend({
-      
-    // })
   ],
 } satisfies NextAuthConfig
