@@ -1,16 +1,17 @@
-import ClientComponent from "./client-component"
-import { ServerComponent } from "./server-component"
-import { ServerComponent2 } from "./server2-component"
+import {ClientComponent} from "./client-component"
+import { ClientComponentWithServer } from "./client-component-with-server"
+import { ServerComponentAction } from "./server-component-with-action"
+import { ServerComponentWithClient } from "./server-component-with-client"
 
 const TestPage = async() => {
   return (
-    <>
-      <h1>Test</h1>
-      {/* <button onClick={() => serverAction()}>Server Action</button> */}
+    <div className="flex flex-col items-center justify-center pt-6">
+      <h1 className="pb-4">Test de componentes</h1>
       <ClientComponent/>
-      <ServerComponent/>
-      {/* <ServerComponent2/> */}
-    </>
+      <ServerComponentAction/>
+      <ServerComponentWithClient/>
+      <ClientComponentWithServer/>
+    </div>
   )
 }
 

@@ -1,17 +1,16 @@
 "use client"
 
-import { ServerComponent, serverAction } from "./server-component"
+import { Button } from "@/components/ui/button"
+import { useState } from "react"
 
-const ClientComponent = () => {
+export const ClientComponent = () => {
+  const [num, setNum] = useState(0)
+
   return (
-    <div className="flex flex-col">
-      <button onClick={async() => await serverAction()}>Client Component</button>
-      <button onClick={()=>console.log("hola desde el client component")}>client component 2</button>
-      {/* <ServerComponent/> */}
+    <div className="flex flex-col items-center gap-y-2 border-b border-t border-blue-500 w-full py-2">
+      <h2>Client Component</h2>
+      <Button onClick={() => setNum(num + 1)}>Aumentar</Button>
+      <span>Numero : {num}</span>
     </div>
   )
 }
-
-export default ClientComponent
-
-
