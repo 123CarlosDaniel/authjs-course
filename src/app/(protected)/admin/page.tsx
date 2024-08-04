@@ -1,9 +1,10 @@
-import { auth, signIn, signOut } from "@/auth"
+import { signOut } from "@/auth"
 import { Button } from "@/components/ui/button"
+import getSession from "@/lib/getSession"
 import { redirect } from "next/navigation"
 
 const AdminPage = async () => {
-  const session = await auth()
+  const session = await getSession()
   if (session?.user.role !== "admin") {
     return (
       <div>

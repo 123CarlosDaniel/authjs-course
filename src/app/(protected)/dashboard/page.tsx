@@ -1,18 +1,12 @@
-import { auth, signOut } from "@/auth"
+import { signOut } from "@/auth"
 import { LogoutButtonClient } from "@/components/logout-button"
 import { Button } from "@/components/ui/button"
+import getSession from "@/lib/getSession"
 
-const DashboardPage = async ({
-  searchParams,
-}: {
-  searchParams: { verified: string }
-}) => {
-  const session = await auth()
+const DashboardPage = async () => {
+  const session = await getSession()
   return (
     <div className="container">
-      <span className="text-green-500 text-xl font-semibold">
-        {searchParams?.verified === "true" && "Email verified"}
-      </span>
       <h1>Dashboard</h1>
       <pre>{JSON.stringify(session, null, 2)}</pre>
       <LogoutButtonClient />
