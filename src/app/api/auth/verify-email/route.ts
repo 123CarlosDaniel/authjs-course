@@ -1,7 +1,6 @@
 import { db } from "@/lib/db"
 import { NextResponse, type NextRequest } from "next/server"
 import { encode } from "@auth/core/jwt"
-import { AUTH_COOKIE_WATCHER } from "@/lib/constants"
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams
@@ -67,6 +66,5 @@ export async function GET(request: NextRequest) {
     httpOnly: true,
     maxAge: 60 * 60,
   })
-  response.cookies.set(AUTH_COOKIE_WATCHER, "true")
   return response
 }

@@ -3,18 +3,13 @@
 import { signOut, useSession } from "next-auth/react"
 import { Button } from "./ui/button"
 import { useRouter } from "next/navigation"
-import { AUTH_COOKIE_WATCHER } from "@/lib/constants"
-import { deleteCookie } from "cookies-next"
-// import { useCurrentSession } from "@/hooks/useCurrentSession"
 
 export const NavBar = () => {
   const router = useRouter()
   const {update, data, status} = useSession()
-  // const {session, status} = useCurrentSession()
 
   const handleLogout = async () => {
     await signOut()
-    deleteCookie(AUTH_COOKIE_WATCHER, { path: "/" })
     await update()
   }
 

@@ -16,25 +16,16 @@ import { Input } from "@/components/ui/input"
 import { registerAction } from "@/actions/auth-actions"
 import { useEffect, useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
-import { getCookie } from "cookies-next"
-import { AUTH_COOKIE_WATCHER } from "@/lib/constants"
+import { useSession } from "next-auth/react"
 
 const FormRegister = () => {
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
   const router = useRouter()
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const isLoggedIn = getCookie(AUTH_COOKIE_WATCHER)
-      if (isLoggedIn == "true") {
-        router.push("/dashboard")
-      }
-    }, 1000)
-    return () => {
-      clearInterval(interval)
-    }
-  }, [])
+  const {data, status, update} = useSession()
+  if(status == "authenticated"){
+    router.push("/dashboard")
+  }
 
   const loginForm = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),

@@ -14,28 +14,19 @@ import {
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { loginAction } from "@/actions/auth-actions"
-import { useEffect, useState, useTransition } from "react"
+import { useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
-import { AUTH_COOKIE_WATCHER } from "@/lib/constants"
-import { getCookie, setCookie } from "cookies-next"
-import { signIn } from "next-auth/react"
+import { signIn, useSession } from "next-auth/react"
+
 
 const FormLogin = () => {
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
   const router = useRouter()
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const isLoggedIn = getCookie(AUTH_COOKIE_WATCHER)
-      if (isLoggedIn == "true") {
-        router.push("/dashboard")
-      }
-    }, 1000)
-    return () => {
-      clearInterval(interval)
-    }
-  }, [])
+  const {data, status, update} = useSession()
+  if(status == "authenticated"){
+    router.push("/dashboard")
+  }
 
   const loginForm = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -53,12 +44,7 @@ const FormLogin = () => {
         setError(response.error)
         return
       }
-      setCookie(AUTH_COOKIE_WATCHER, "true", {
-        path: "/",
-        maxAge: 60 * 60 * 24 * 30,
-        httpOnly: false,
-      })
-      router.push("/dashboard")
+      window.location.href = "/dashboard"
     })
   }
 
