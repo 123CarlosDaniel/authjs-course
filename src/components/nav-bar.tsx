@@ -2,16 +2,20 @@
 
 import { signOut, useSession } from "next-auth/react"
 import { Button } from "./ui/button"
-import { redirect, useRouter } from "next/navigation"
+import { useRouter } from "next/navigation"
+import { AUTH_COOKIE_WATCHER } from "@/lib/constants"
+import { deleteCookie } from "cookies-next"
+// import { useCurrentSession } from "@/hooks/useCurrentSession"
 
 export const NavBar = () => {
   const router = useRouter()
-  const session = useSession()
-  const user = session.data?.user
+  const {update, data, status} = useSession()
+  // const {session, status} = useCurrentSession()
 
   const handleLogout = async () => {
     await signOut()
-    await session.update()
+    deleteCookie(AUTH_COOKIE_WATCHER, { path: "/" })
+    await update()
   }
 
   const handleSignin = async () => {
@@ -20,7 +24,7 @@ export const NavBar = () => {
 
   return (
     <div className="w-full flex gap-x-8 items-center justify-center py-4 mb-4">
-      {user && (
+      {data?.user && (
         <>
           <Button variant="outline" onClick={()=>{
             router.push("/dashboard")
@@ -28,7 +32,7 @@ export const NavBar = () => {
           <Button onClick={handleLogout}>Logout</Button>
         </>
       )}
-      {!user && <Button onClick={handleSignin}>Signin</Button>}
+      {!data?.user && status !== "loading" && <Button onClick={handleSignin}>Signin</Button>}
     </div>
   )
 }

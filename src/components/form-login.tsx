@@ -18,6 +18,7 @@ import { useEffect, useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
 import { AUTH_COOKIE_WATCHER } from "@/lib/constants"
 import { getCookie, setCookie } from "cookies-next"
+import { signIn } from "next-auth/react"
 
 const FormLogin = () => {
   const [error, setError] = useState<string | null>(null)
@@ -57,6 +58,7 @@ const FormLogin = () => {
         maxAge: 60 * 60 * 24 * 30,
         httpOnly: false,
       })
+      router.push("/dashboard")
     })
   }
 
@@ -104,6 +106,7 @@ const FormLogin = () => {
           </Button>
         </form>
       </Form>
+      <Button onClick={()=>signIn("google")}>Google</Button>
     </div>
   )
 }

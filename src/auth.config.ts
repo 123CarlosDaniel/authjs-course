@@ -1,5 +1,6 @@
 import type { NextAuthConfig } from "next-auth"
 import Credentials from "next-auth/providers/credentials"
+import Google from "next-auth/providers/google"
 import bcrypt from "bcryptjs"
 import { loginSchema } from "./lib/zod"
 import { nanoid } from "nanoid"
@@ -8,6 +9,7 @@ import { sendEmailVerification } from "./lib/mail"
 
 // Notice this is only an object, not a full Auth.js instance
 export default {
+  trustHost: true,
   providers: [
     Credentials({
       name: "Credentials",
@@ -67,5 +69,6 @@ export default {
         throw new Error("Please check your email")
       },
     }),
+    Google
   ],
 } satisfies NextAuthConfig
