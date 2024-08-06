@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { loginAction } from "@/actions/auth-actions"
 import { useState, useTransition } from "react"
-import { useRouter } from "next/navigation"
+import { redirect, useRouter } from "next/navigation"
 import { signIn, useSession } from "next-auth/react"
 import { FcGoogle } from "react-icons/fc"
 import { FaGithub } from "react-icons/fa"
@@ -46,7 +46,7 @@ const FormLogin = () => {
         setError(response.error)
         return
       }
-      window.location.href = "/dashboard"
+      redirect("/dashboard")
     })
   }
 
