@@ -12,12 +12,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(db),
   session: { strategy: "jwt" },
   callbacks: {
-    async signIn({account, user}) {
-      if(account?.provider === "credentials") {
+    async signIn({ account, user }) {
+      if (account?.provider === "credentials") {
         const accountExists = await db.account.findUnique({
-          where: {provider_providerAccountId: {provider: 'credentials', providerAccountId: account.providerAccountId}}
-        })        
-        if(!accountExists) {
+          where: {
+            provider_providerAccountId: {
+              provider: account.provider,
+              providerAccountId: account.providerAccountId,
+            },
+          },
+        })
+        if (!accountExists) {
           await db.account.create({
             data: {
               userId: user.id,
@@ -27,25 +32,28 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               token_type: account.token_type,
               access_token: account.access_token,
               id_token: account.id_token,
-            }
+            },
           })
         }
-      }
-      else if (account?.provider === 'google') {
+      } else if (account && account.provider) {
         const existingUser = await db.user.findUnique({
-          where: { email: user!.email as string},
-          include: {accounts: true}
-        });
+          where: { email: user!.email as string },
+        })
         if (existingUser) {
           const accountExists = await db.account.findUnique({
-            where: { provider_providerAccountId: { provider: 'google', providerAccountId: account.providerAccountId} },
+            where: {
+              provider_providerAccountId: {
+                provider: account.provider,
+                providerAccountId: account.providerAccountId,
+              },
+            },
           })
-          if(!accountExists) {
+          if (!accountExists) {
             await db.account.create({
               data: {
                 userId: existingUser.id,
                 type: account.type,
-                provider: "google",
+                provider: account.provider,
                 providerAccountId: account.providerAccountId,
                 refresh_token: account.refresh_token,
                 access_token: account.access_token,
@@ -53,11 +61,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 token_type: account.token_type,
                 id_token: account.id_token,
               },
-            });
+            })
           }
-        } 
+        }
       }
-      return true;
+      return true
     },
     jwt({ token, user }) {
       if (user) {

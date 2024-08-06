@@ -1,6 +1,7 @@
 import type { NextAuthConfig } from "next-auth"
 import Credentials from "next-auth/providers/credentials"
 import Google from "next-auth/providers/google"
+import Github from "next-auth/providers/github"
 import bcrypt from "bcryptjs"
 import { loginSchema } from "./lib/zod"
 import { nanoid } from "nanoid"
@@ -69,6 +70,7 @@ export default {
         throw new Error("Please check your email")
       },
     }),
-    Google
+    Google,
+    Github
   ],
 } satisfies NextAuthConfig

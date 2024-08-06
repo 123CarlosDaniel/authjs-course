@@ -17,6 +17,7 @@ import { registerAction } from "@/actions/auth-actions"
 import { useEffect, useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
+import Link from "next/link"
 
 const FormRegister = () => {
   const [error, setError] = useState<string | null>(null)
@@ -49,12 +50,12 @@ const FormRegister = () => {
 
   return (
     <div className="max-w-4xl">
-      <h1 className="text-center font-medium">Register</h1>
       <Form {...loginForm}>
         <form
           onSubmit={loginForm.handleSubmit(onSubmit)}
-          className="space-y-8 flex flex-col"
+          className="space-y-8 flex flex-col w-[500px] shadow-lg shadow-gray-300 p-4 rounded-md"
         >
+          <h1 className="text-center font-medium text-lg">Register</h1>
           <FormField
             control={loginForm.control}
             name="name"
@@ -102,6 +103,12 @@ const FormRegister = () => {
           >
             Submit
           </Button>
+          <span className="text-center text-base">
+            Already have an account?{" "}
+            <Link href="/login" className="text-blue-500 underline">
+              Sign In here!
+            </Link>
+          </span>
         </form>
       </Form>
     </div>

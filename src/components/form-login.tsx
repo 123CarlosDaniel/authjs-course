@@ -17,14 +17,16 @@ import { loginAction } from "@/actions/auth-actions"
 import { useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
 import { signIn, useSession } from "next-auth/react"
-
+import { FcGoogle } from "react-icons/fc"
+import { FaGithub } from "react-icons/fa"
+import Link from "next/link"
 
 const FormLogin = () => {
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
   const router = useRouter()
-  const {data, status, update} = useSession()
-  if(status == "authenticated"){
+  const { status } = useSession()
+  if (status == "authenticated") {
     router.push("/dashboard")
   }
 
@@ -50,12 +52,12 @@ const FormLogin = () => {
 
   return (
     <div className="max-w-4xl">
-      <h1 className="text-center font-medium">Login</h1>
       <Form {...loginForm}>
         <form
           onSubmit={loginForm.handleSubmit(onSubmit)}
-          className="space-y-8 flex flex-col"
+          className="space-y-8 flex flex-col w-[500px] shadow-lg shadow-gray-300 p-4 rounded-md"
         >
+          <h1 className="text-center font-medium text-lg">Login</h1>
           <FormField
             control={loginForm.control}
             name="email"
@@ -90,9 +92,34 @@ const FormLogin = () => {
           >
             Submit
           </Button>
+          <div className="flex items-center w-full gap-x-2">
+            <Button
+              className="w-full"
+              size={"lg"}
+              variant={"outline"}
+              onClick={() => signIn("google")}
+              type="button"
+            >
+              <FcGoogle className="h-5 w-5" />
+            </Button>
+            <Button
+              className="w-full"
+              size={"lg"}
+              variant={"outline"}
+              onClick={() => signIn("github")}
+              type="button"
+            >
+              <FaGithub className="h-5 w-5" />
+            </Button>
+          </div>
+          <span className="text-center text-base">
+            Don't have an account?{" "}
+            <Link href="/register" className="text-blue-500 underline">
+              Sign Up here!
+            </Link>
+          </span>
         </form>
       </Form>
-      <Button onClick={()=>signIn("google")}>Google</Button>
     </div>
   )
 }
