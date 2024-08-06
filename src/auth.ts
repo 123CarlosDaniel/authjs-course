@@ -15,14 +15,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async signIn({account, user}) {
       if(account?.provider === "credentials") {
         const accountExists = await db.account.findUnique({
-          where: {userId: user.id}
+          where: {provider_providerAccountId: {provider: 'credentials', providerAccountId: account.providerAccountId}}
         })        
         if(!accountExists) {
           await db.account.create({
             data: {
               userId: user.id,
               type: account.type,
-              provider: account.provider,
+              provider: "credentials",
               providerAccountId: account.providerAccountId,
               token_type: account.token_type,
               access_token: account.access_token,
@@ -31,7 +31,33 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           })
         }
       }
-      return true
+      else if (account?.provider === 'google') {
+        const existingUser = await db.user.findUnique({
+          where: { email: user!.email as string},
+          include: {accounts: true}
+        });
+        if (existingUser) {
+          const accountExists = await db.account.findUnique({
+            where: { provider_providerAccountId: { provider: 'google', providerAccountId: account.providerAccountId} },
+          })
+          if(!accountExists) {
+            await db.account.create({
+              data: {
+                userId: existingUser.id,
+                type: account.type,
+                provider: "google",
+                providerAccountId: account.providerAccountId,
+                refresh_token: account.refresh_token,
+                access_token: account.access_token,
+                expires_at: account.expires_at,
+                token_type: account.token_type,
+                id_token: account.id_token,
+              },
+            });
+          }
+        } 
+      }
+      return true;
     },
     jwt({ token, user }) {
       if (user) {

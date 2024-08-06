@@ -8,7 +8,6 @@ import bcrypt from "bcryptjs"
 import { z } from "zod"
 
 export const loginAction = async (values: z.infer<typeof loginSchema>) => {
-  // "use server";
   try {
     await signIn("credentials", {
       email: values.email,
