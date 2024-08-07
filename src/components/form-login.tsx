@@ -15,17 +15,20 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { loginAction } from "@/actions/auth-actions"
 import { useState, useTransition } from "react"
-import { redirect, useRouter } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { signIn, useSession } from "next-auth/react"
 import { FcGoogle } from "react-icons/fc"
 import { FaGithub } from "react-icons/fa"
 import Link from "next/link"
+import { useToast } from "./ui/use-toast"
 
 const FormLogin = () => {
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
   const router = useRouter()
   const { status } = useSession()
+  const { toast } = useToast()
+
   if (status == "authenticated") {
     router.push("/dashboard")
   }
@@ -46,7 +49,18 @@ const FormLogin = () => {
         setError(response.error)
         return
       }
-      redirect("/dashboard")
+      toast({
+        title: "Login Success",
+        description: "You have been logged in successfully",
+        variant: "success",
+        duration: 3000,
+      })
+      await new Promise((res: any) => {
+        setTimeout(() => {
+          window.location.href = "/dashboard"
+          res(null)
+        }, 1000)
+      })
     })
   }
 

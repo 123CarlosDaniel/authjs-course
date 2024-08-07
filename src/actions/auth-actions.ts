@@ -39,7 +39,7 @@ export const registerAction = async (
       },
     })
 
-    if (user) {
+    if (user && user.emailVerified) {
       return { error: "user already exists" }
     }
     
